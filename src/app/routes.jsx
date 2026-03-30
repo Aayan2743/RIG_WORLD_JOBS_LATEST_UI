@@ -41,6 +41,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute.jsx";
 import { CandidateLayout } from "./components/CandidateLayout.jsx";
 import { EmployerLayout } from "./components/EmployerLayout.jsx";
 import { Navigate } from "react-router";
+import { AdminLayout } from "./components/AdminLayout.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -112,9 +113,24 @@ export const router = createBrowserRouter([
     path: "/admin/dashboard",
     element: (
       <ProtectedRoute allowedRoles={["admin"]} redirectTo="/admin/login">
-        <AdminDashboard />
+        {/* <AdminDashboard /> */}
+        <AdminLayout />
       </ProtectedRoute>
     ),
+
+     children: [
+    { index: true, element: <AdminDashboard /> },
+
+    { path: "dashboard", element: <AdminDashboard /> },
+    { path: "jobs", element: <EmployerJobListings /> },
+    { path: "company-profile", element: <EmployerCompanyProfile /> },
+    { path: "analytics", element: <EmployerAnalytics /> },
+    { path: "notifications", element: <EmployerNotifications /> },
+    { path: "settings", element: <EmployerSettings /> },
+    { path: "company-requests", element: <CompanyRequests /> },
+    { path: "contact-us", element: <ContactUs /> },
+    { path: "post-job", element: <PostJob /> },
+  ],
   },
   { path: "*", Component: NotFound },
 ]);
