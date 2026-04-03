@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Search, MapPin, Briefcase, ChevronRight, Star, Users, Globe, TrendingUp, SlidersHorizontal, X } from 'lucide-react';
 import { motion } from 'motion/react';
 

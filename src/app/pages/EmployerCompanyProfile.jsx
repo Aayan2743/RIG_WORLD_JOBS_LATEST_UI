@@ -1,9 +1,13 @@
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Building2, Globe, MapPin, Mail, Phone, Users, ShieldCheck, ChevronRight } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthContext.jsx';
 
 export function EmployerCompanyProfile() {
+  const { user } = useAuth();
+  const PROFILE_KEY = user?.email ? `rwj_company_public_profile:${user.email}` : null;
+
   const [form, setForm] = useState({
     companyName: 'Shell Energy',
     tagline: 'Powering progress with responsible energy.',
@@ -20,6 +24,36 @@ export function EmployerCompanyProfile() {
 
   const onChange = (e) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  // Load previously saved public details (localStorage) for this company.
+  useEffect(() => {
+    if (!PROFILE_KEY) return;
+    try {
+      const raw = localStorage.getItem(PROFILE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object") {
+        setForm(prev => ({ ...prev, ...parsed }));
+      }
+    } catch {
+      // If localStorage is corrupted/unavailable, fall back to defaults.
+    }
+  }, [PROFILE_KEY]);
+
+  const handleUpdate = () => {
+    if (!PROFILE_KEY) return;
+    setSaving(true);
+    try {
+      localStorage.setItem(PROFILE_KEY, JSON.stringify(form));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -154,6 +188,24 @@ export function EmployerCompanyProfile() {
                   />
                 </div>
               </div>
+
+              <div className="sm:col-span-2 mt-6 flex items-center gap-3 flex-wrap">
+                <button
+                  type="button"
+                  onClick={handleUpdate}
+                  disabled={!PROFILE_KEY || saving}
+                  className="inline-flex items-center justify-center space-x-2 px-6 py-3 rounded-xl text-white text-sm font-semibold shine-effect transition-all hover:shadow-md hover:scale-[1.01] disabled:opacity-60 disabled:cursor-not-allowed"
+                  style={{ background: 'linear-gradient(135deg, #0891B2 0%, #0E7490 100%)' }}
+                >
+                  {saving ? "Updating..." : "Update"}
+                </button>
+
+                {saved && (
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold">
+                    ✓ Details saved
+                  </span>
+                )}
+              </div>
             </div>
           </motion.div>
 
@@ -181,7 +233,7 @@ export function EmployerCompanyProfile() {
 
             <div className="mt-5">
               <Link
-                to="/employer/jobs"
+                to="/company/jobs"
                 className="w-full inline-flex items-center justify-center space-x-2 py-2.5 rounded-xl text-white text-sm font-semibold transition-all hover:shadow-md"
                 style={{ background: 'linear-gradient(135deg, #0891B2, #0E7490)' }}
               >

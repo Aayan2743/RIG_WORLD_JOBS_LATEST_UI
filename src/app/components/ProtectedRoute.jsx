@@ -1,51 +1,39 @@
-// import { Navigate, useLocation } from 'react-router';
-// import { useAuth } from '../context/AuthContext.jsx';
-
-// export function ProtectedRoute({ children, allowedRoles, redirectTo }) {
-//   const { isAuthenticated, user } = useAuth();
-//   const location = useLocation();
-
-//   if (!isAuthenticated) {
-//     const fallback = redirectTo ?? '/candidate/login';
-//     return <Navigate to={fallback} replace state={{ from: location.pathname }} />;
-//   }
-
-//   if (allowedRoles && user && !allowedRoles.includes(user.role)) {
-//     const roleRedirect = user.role === 'employer' ? '/employer/dashboard' : '/candidate/dashboard';
-//     return <Navigate to={redirectTo ?? roleRedirect} replace />;
-//   }
-
-//   return <>{children}</>;
-// }
-
-
-
-
-import { Navigate, useLocation } from 'react-router';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
-export function ProtectedRoute({ children, allowedRoles, redirectTo }) {
+export function ProtectedRoute({ children, allowedRoles, redirectTo, requireCompany, requireNoCompany }) {
   const { token, user } = useAuth();
   const location = useLocation();
 
   console.log("ProtectedRoute check:", { token, user, allowedRoles });
 
-  // ✅ check token instead of isAuthenticated
+  // ── 1. Not logged in → go to login ──
   if (!token) {
     const fallback = redirectTo ?? '/candidate/login';
     return <Navigate to={fallback} replace state={{ from: location.pathname }} />;
   }
 
-  // ✅ role check
+  // ── 2. Wrong role → redirect to correct dashboard ──
   if (allowedRoles && user && !allowedRoles.includes(user.role)) {
-    const roleRedirect =
-      user.role === 'admin'
-        ? '/admin/dashboard'
-        : user.role === 'employer'
-        ? '/employer/dashboard'
-        : '/candidate/dashboard';
+    if (user.role === 'admin')    return <Navigate to="/admin" replace />;
+    if (user.role === 'employer') {
+      // ✅ Employer with companyName → company dashboard
+      // ✅ Employer without companyName → employer dashboard
+      return user.companyName
+        ? <Navigate to="/company/dashboard" replace />
+        : <Navigate to="/employer/dashboard" replace />;
+    }
+    return <Navigate to="/candidate/dashboard" replace />;
+  }
 
-    return <Navigate to={redirectTo ?? roleRedirect} replace />;
+  // ── 3. Company user trying to access /employer/* → redirect to /company/* ──
+  if (requireNoCompany && user?.companyName) {
+    return <Navigate to="/company/dashboard" replace />;
+  }
+
+  // ── 4. Pure employer trying to access /company/* → redirect to /employer/* ──
+  if (requireCompany && !user?.companyName) {
+    return <Navigate to="/employer/dashboard" replace />;
   }
 
   return <>{children}</>;

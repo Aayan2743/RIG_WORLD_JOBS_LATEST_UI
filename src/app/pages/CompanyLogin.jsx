@@ -4,7 +4,6 @@ import { motion } from 'motion/react';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 
-// ── mock auth helpers ──────────────────────────────────────────────
 const USERS_KEY = 'rwj_users';
 function getUsers() {
   try { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); } catch { return []; }
@@ -15,17 +14,20 @@ function mockLogin(email, password) {
   if (!user) throw new Error('Invalid email or password.');
   if (user.approvalStatus === 'pending') throw new Error('PENDING');
   if (user.approvalStatus === 'rejected') throw new Error('REJECTED');
-  return { token: `mock-token-${user.id}`, user: { id: user.id, name: user.name, email: user.email, role: user.role, companyName: user.companyName || null } };
+  return {
+    token: `mock-token-${user.id}`,
+    user: { id: user.id, name: user.name, email: user.email, role: user.role, companyName: user.companyName || null }
+  };
 }
 
-export function EmployerLogin() {
+export function CompanyLogin() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [blockedStatus, setBlockedStatus] = useState(null); // 'pending' | 'rejected'
+  const [blockedStatus, setBlockedStatus] = useState(null);
 
   const handleChange = (e) =>
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -38,14 +40,18 @@ export function EmployerLogin() {
     try {
       const res = mockLogin(form.email, form.password);
       if (res.user.role !== 'employer') {
-        setError('This account is registered as a candidate. Please use the Candidate Login.');
+        setError('This account is not registered as a company. Please use the correct login.');
+        return;
+      }
+      if (!res.user.companyName) {
+        setError('This account is not a company account. Please use the Admin login.');
         return;
       }
       login(res.token, res.user);
-      navigate('/employer/dashboard');
+      navigate('/company/dashboard');
     } catch (err) {
-      if (err.message === 'PENDING') { setBlockedStatus('pending'); }
-      else if (err.message === 'REJECTED') { setBlockedStatus('rejected'); }
+      if (err.message === 'PENDING') setBlockedStatus('pending');
+      else if (err.message === 'REJECTED') setBlockedStatus('rejected');
       else setError(err.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
@@ -54,7 +60,7 @@ export function EmployerLogin() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Panel — Employer Brand */}
+      {/* Left Panel */}
       <div className="hidden lg:flex lg:flex-col lg:w-[45%] relative overflow-hidden p-10 justify-between"
         style={{ background: 'linear-gradient(135deg, #0D1B2E 0%, #0E7490 50%, #0891B2 100%)' }}>
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
@@ -66,7 +72,7 @@ export function EmployerLogin() {
           </div>
           <div>
             <div className="text-white font-bold text-lg leading-none">RigWorld</div>
-            <div className="text-cyan-300 text-[9px] font-semibold tracking-widest uppercase">Employers</div>
+            <div className="text-cyan-300 text-[9px] font-semibold tracking-widest uppercase">Company Portal</div>
           </div>
         </Link>
 
@@ -119,17 +125,15 @@ export function EmployerLogin() {
 
           <div className="mb-8">
             <div className="inline-flex items-center text-xs font-semibold text-secondary bg-secondary/10 px-3 py-1.5 rounded-full mb-4">
-              <Building2 className="w-3.5 h-3.5 mr-1.5" /> Employer Portal
+              <Building2 className="w-3.5 h-3.5 mr-1.5" /> Company Portal
             </div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Employer Login</h1>
-            <p className="text-muted-foreground">Access your hiring dashboard and manage candidates</p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Company Login</h1>
+            <p className="text-muted-foreground">Access your company dashboard and manage candidates</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Demo credentials */}
             <div className="bg-cyan-50 border border-cyan-200 rounded-xl p-3.5 text-xs text-cyan-800 space-y-1">
-              <p className="font-bold text-cyan-900">Demo Employer Credentials</p>
-              <p>Email: <span className="font-mono font-semibold">employer@demo.com</span> / Password: <span className="font-mono font-semibold">employer123</span></p>
+              <p className="font-bold text-cyan-900">Demo Company Credentials</p>
               <p>Email: <span className="font-mono font-semibold">company@demo.com</span> / Password: <span className="font-mono font-semibold">company123</span></p>
             </div>
 
@@ -138,7 +142,7 @@ export function EmployerLogin() {
                 <Clock className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-600" />
                 <div>
                   <p className="font-bold text-amber-900 mb-0.5">Account Pending Approval</p>
-                  <p>Your company registration is under review. You'll receive your credentials once the admin approves your account.</p>
+                  <p>Your company registration is under review. You'll receive credentials once approved.</p>
                 </div>
               </div>
             )}
@@ -147,7 +151,7 @@ export function EmployerLogin() {
                 <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="font-bold mb-0.5">Registration Rejected</p>
-                  <p>Your company registration was not approved. Please <Link to="/contact-us" className="underline font-semibold">contact support</Link> for more information.</p>
+                  <p>Your company registration was not approved. Please <Link to="/contact-us" className="underline font-semibold">contact support</Link>.</p>
                 </div>
               </div>
             )}
@@ -157,6 +161,7 @@ export function EmployerLogin() {
                 <span>{error}</span>
               </div>
             )}
+
             <div>
               <label className="block text-sm font-semibold text-foreground mb-2">Company Email</label>
               <div className="relative">
@@ -189,16 +194,15 @@ export function EmployerLogin() {
             </div>
 
             <button type="submit" disabled={loading}
-              className="w-full py-3.5 rounded-xl font-bold text-sm text-white transition-all hover:shadow-lg hover:scale-[1.01] shine-effect flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="w-full py-3.5 rounded-xl font-bold text-sm text-white transition-all hover:shadow-lg hover:scale-[1.01] flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
               style={{ background: 'linear-gradient(135deg, #0891B2 0%, #0E7490 100%)' }}>
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><span>Sign In to Dashboard</span><ArrowRight className="w-4 h-4" /></>}
             </button>
           </form>
 
-
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            Don't have an employer account?{' '}
-            <Link to="/employer/register" className="text-secondary font-semibold hover:underline">Register Company</Link>
+            Don't have a company account?{' '}
+            <Link to="/company/register" className="text-secondary font-semibold hover:underline">Register Company</Link>
           </p>
           <p className="mt-2 text-center text-sm text-muted-foreground">
             Looking for a job?{' '}

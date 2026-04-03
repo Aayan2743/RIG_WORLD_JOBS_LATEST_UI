@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Bell, CheckCircle, XCircle, Mail, Lock, Link as LinkIcon } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useAuth } from '../context/AuthContext.jsx';
 

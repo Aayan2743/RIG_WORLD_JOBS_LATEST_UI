@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Home, Search, Briefcase, ArrowLeft } from 'lucide-react';
 import { motion } from 'motion/react';
 

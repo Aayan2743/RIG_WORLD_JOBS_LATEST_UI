@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Users, Briefcase, Globe, TrendingUp, Heart, Shield, Zap, ChevronRight, Mail, Phone, MapPin, Star } from 'lucide-react';
 import { motion } from 'motion/react';
 

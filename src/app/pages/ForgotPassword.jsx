@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Mail, ArrowRight, ArrowLeft, Briefcase, CheckCircle } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'motion/react';

@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Briefcase, Bookmark, MapPin, TrendingUp, ChevronRight, Eye } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';

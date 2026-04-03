@@ -1,13 +1,12 @@
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Briefcase, ChevronDown, User, Building2, Bell, LogIn } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 
 const navLinks = [
   { label: 'Home', to: '/' },
-  { label: 'Find Jobs', to: '/jobs' },
-  // { label: 'Companies', to: '/companies' },
-  // { label: 'Upload CV', to: '/candidate/profile' },
+  { label: 'Jobs', to: '/jobs' },
+  { label: 'Upload CV', to: '/candidate/profile' },
   { label: 'About', to: '/about' },
   { label: 'Contact', to: '/contact-us' },
 ];
@@ -112,10 +111,6 @@ export function Navbar() {
                           <User className="w-4 h-4 text-primary" />
                           <span>Create Account</span>
                         </Link>
-                        {/* <Link to="/candidate/dashboard" className="flex items-center space-x-3 px-4 py-2.5 text-sm hover:bg-muted/50">
-                          <Briefcase className="w-4 h-4 text-primary" />
-                          <span>Dashboard</span>
-                        </Link> */}
                       </div>
                     </motion.div>
                   )}
@@ -134,7 +129,7 @@ export function Navbar() {
                   style={{ background: 'var(--gradient-primary)' }}
                 >
                   <Building2 className="w-4 h-4" />
-                  <span>For Employers</span>
+                  <span>Companies</span>
                   <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showEmployerMenu ? 'rotate-180' : ''}`} />
                 </button>
 
@@ -149,25 +144,17 @@ export function Navbar() {
                       onMouseEnter={() => setShowEmployerMenu(true)}
                     >
                       <div className="px-3 py-2 bg-gradient-to-r from-secondary/5 to-transparent border-b border-border/60">
-                        <p className="text-xs font-semibold text-secondary uppercase tracking-wider">For Employers</p>
+                        <p className="text-xs font-semibold text-secondary uppercase tracking-wider">For Companies</p>
                       </div>
                       <div className="py-1">
-                        <Link to="/employer/login" className="flex items-center space-x-3 px-4 py-2.5 text-sm hover:bg-muted/50">
+                        <Link to="/company/login" className="flex items-center space-x-3 px-4 py-2.5 text-sm hover:bg-muted/50">
                           <LogIn className="w-4 h-4 text-secondary" />
-                          <span>Sign In as an Employer</span>
+                          <span>Sign In </span>
                         </Link>
                         <Link to="/employer/register" className="flex items-center space-x-3 px-4 py-2.5 text-sm hover:bg-muted/50">
                           <Building2 className="w-4 h-4 text-secondary" />
                           <span>Register Company</span>
                         </Link>
-                        {/* <Link to="/employer/dashboard" className="flex items-center space-x-3 px-4 py-2.5 text-sm hover:bg-muted/50">
-                          <Briefcase className="w-4 h-4 text-secondary" />
-                          <span>Dashboard</span>
-                        </Link> */}
-                        {/* <Link to="/employer/post-job" className="flex items-center space-x-3 px-4 py-2.5 text-sm hover:bg-muted/50">
-                          <Bell className="w-4 h-4 text-secondary" />
-                          <span>Post a Job</span>
-                        </Link> */}
                       </div>
                     </motion.div>
                   )}

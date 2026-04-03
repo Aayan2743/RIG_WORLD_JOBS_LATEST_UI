@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useAuth } from './AuthContext.jsx';
 
 const JobsContext = createContext(null);
 
@@ -8,7 +9,8 @@ const seedJobs = [
   {
     id: 1,
     title: 'Senior Drilling Engineer',
-    company: 'Shell Energy',
+    company: 'RigWorld Demo Company',
+    companyEmail: 'company@demo.com',
     location: 'Houston, TX',
     type: 'Full-time',
     posted: '2025-03-01',
@@ -20,7 +22,8 @@ const seedJobs = [
   {
     id: 2,
     title: 'Safety Manager',
-    company: 'Shell Energy',
+    company: 'RigWorld Demo Company',
+    companyEmail: 'company@demo.com',
     location: 'Aberdeen, UK',
     type: 'Full-time',
     posted: '2025-02-22',
@@ -32,7 +35,8 @@ const seedJobs = [
   {
     id: 3,
     title: 'Process Engineer',
-    company: 'Shell Energy',
+    company: 'RigWorld Demo Company',
+    companyEmail: 'company@demo.com',
     location: 'Singapore',
     type: 'Full-time',
     posted: '2025-02-26',
@@ -44,7 +48,8 @@ const seedJobs = [
   {
     id: 4,
     title: 'Rig Supervisor (Offshore)',
-    company: 'Shell Energy',
+    company: 'RigWorld Demo Company',
+    companyEmail: 'company@demo.com',
     location: 'Gulf of Mexico',
     type: 'Contract',
     posted: '2025-02-15',
@@ -56,7 +61,8 @@ const seedJobs = [
   {
     id: 5,
     title: 'HSE Coordinator',
-    company: 'Shell Energy',
+    company: 'RigWorld Demo Company',
+    companyEmail: 'company@demo.com',
     location: 'Houston, TX',
     type: 'Full-time',
     posted: '2025-01-30',
@@ -64,6 +70,32 @@ const seedJobs = [
     applicants: 19,
     views: 95,
     status: 'Closed',
+  },
+  {
+    id: 6,
+    title: 'Petroleum Engineer',
+    company: 'BP Global',
+    companyEmail: 'bp@example.com',
+    location: 'London, UK',
+    type: 'Full-time',
+    posted: '2025-03-05',
+    expires: '2025-04-05',
+    applicants: 33,
+    views: 210,
+    status: 'Active',
+  },
+  {
+    id: 7,
+    title: 'Offshore Installation Manager',
+    company: 'BP Global',
+    companyEmail: 'bp@example.com',
+    location: 'North Sea',
+    type: 'Contract',
+    posted: '2025-03-10',
+    expires: '2025-04-10',
+    applicants: 17,
+    views: 140,
+    status: 'Active',
   },
 ];
 
@@ -75,12 +107,17 @@ function formatDate(d) {
 }
 
 export function JobsProvider({ children }) {
+  const { user } = useAuth();
+
   const [jobs, setJobs] = useState(() => {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return seedJobs;
     try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return seedJobs;
       const parsed = JSON.parse(raw);
-      if (!Array.isArray(parsed)) return seedJobs;
+      // If stored jobs are missing companyEmail (old data), reset to seed
+      if (!Array.isArray(parsed) || parsed.length === 0) return seedJobs;
+      const hasMigrated = parsed.some(j => j.companyEmail);
+      if (!hasMigrated) return seedJobs;
       return parsed;
     } catch {
       return seedJobs;
@@ -101,7 +138,8 @@ export function JobsProvider({ children }) {
       const created = {
         id: Date.now(),
         title: job.title,
-        company: job.company,
+        company: user?.companyName || job.company || 'Unknown Company',
+        companyEmail: user?.email || job.companyEmail || '',
         location: job.location,
         type: job.type,
         category: job.category,
@@ -134,18 +172,18 @@ export function JobsProvider({ children }) {
     const toggleStatus = (id) => {
       setJobs(prev =>
         prev.map(j =>
-          j.id !== id
-            ? j
-            : {
-                ...j,
-                status: j.status === 'Active' ? 'Paused' : 'Active',
-              },
-        ),
+          j.id !== id ? j : { ...j, status: j.status === 'Active' ? 'Paused' : 'Active' }
+        )
       );
     };
 
-    return { jobs, addJob, updateJob, deleteJob, toggleStatus };
-  }, [jobs]);
+    // Admin sees all jobs; employer sees only their own matched by email
+    const myJobs = user?.role === 'admin'
+      ? jobs
+      : jobs.filter(j => j.companyEmail === user?.email);
+
+    return { jobs, myJobs, addJob, updateJob, deleteJob, toggleStatus };
+  }, [jobs, user]);
 
   return <JobsContext.Provider value={api}>{children}</JobsContext.Provider>;
 }

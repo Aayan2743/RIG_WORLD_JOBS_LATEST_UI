@@ -24,7 +24,7 @@ function submitRequest(data) {
   return req;
 }
 
-export function EmployerRegister() {
+export function CompanyRegister() {
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
     companyName: '', contactName: '', email: '', phone: '',
@@ -74,7 +74,7 @@ export function EmployerRegister() {
           </div>
           <div>
             <div className="text-white font-bold text-lg leading-none">RigWorld</div>
-            <div className="text-cyan-300 text-[9px] font-semibold tracking-widest uppercase">Employers</div>
+            <div className="text-cyan-300 text-[9px] font-semibold tracking-widest uppercase">Company Portal</div>
           </div>
         </Link>
 
@@ -136,17 +136,18 @@ export function EmployerRegister() {
                 </div>
                 <div className="flex items-start space-x-2 text-amber-800">
                   <span className="font-bold mt-0.5">3.</span>
-                  <span>Log in at <Link to="/employer/login" className="font-semibold underline">/employer/login</Link> to access your dashboard</span>
+                  {/* ✅ Updated link to /company/login */}
+                  <span>Log in at <Link to="/company/login" className="font-semibold underline">/company/login</Link> to access your dashboard</span>
                 </div>
               </div>
               <div className="bg-cyan-50 border border-cyan-200 rounded-xl p-3.5 text-xs text-cyan-800 mb-5">
                 <p className="font-bold text-cyan-900 mb-1">Want to test right now?</p>
-                <p>Use demo: <span className="font-mono font-semibold">employer@demo.com</span> / <span className="font-mono font-semibold">employer123</span></p>
-                <Link to="/employer/login" className="text-cyan-700 font-semibold underline mt-1 inline-block">Go to Employer Login →</Link>
+                <p>Use demo: <span className="font-mono font-semibold">company@demo.com</span> / <span className="font-mono font-semibold">company123</span></p>
+                <Link to="/company/login" className="text-cyan-700 font-semibold underline mt-1 inline-block">Go to Company Login →</Link>
               </div>
               <Link
                 to="/"
-                className="w-full py-3.5 rounded-xl font-bold text-sm text-white transition-all hover:shadow-lg inline-flex items-center justify-center shine-effect"
+                className="w-full py-3.5 rounded-xl font-bold text-sm text-white transition-all hover:shadow-lg inline-flex items-center justify-center"
                 style={{ background: 'linear-gradient(135deg, #0891B2 0%, #0E7490 100%)' }}
               >
                 Back to Home
@@ -165,7 +166,7 @@ export function EmployerRegister() {
 
               <div className="mb-7">
                 <div className="inline-flex items-center text-xs font-semibold text-secondary bg-secondary/10 px-3 py-1.5 rounded-full mb-4">
-                  <Building2 className="w-3.5 h-3.5 mr-1.5" /> Company Registration Request
+                  <Building2 className="w-3.5 h-3.5 mr-1.5" /> Company Registration
                 </div>
                 <h1 className="text-3xl font-bold text-foreground mb-2">Register Your Company</h1>
                 <p className="text-muted-foreground text-sm">Submit your details — our team will review and approve your account within 24 hours.</p>
@@ -274,21 +275,22 @@ export function EmployerRegister() {
                   <input type="checkbox" required className="w-4 h-4 rounded border-border mt-0.5" />
                   <span className="text-sm text-muted-foreground">
                     I agree to the{' '}
-                    <a href="#" className="text-secondary hover:underline">Employer Terms</a>{' '}and{' '}
+                    <a href="#" className="text-secondary hover:underline">Company Terms</a>{' '}and{' '}
                     <a href="#" className="text-secondary hover:underline">Privacy Policy</a>
                   </span>
                 </label>
 
                 <button type="submit" disabled={loading}
-                  className="w-full py-3.5 rounded-xl font-bold text-sm text-white transition-all hover:shadow-lg hover:scale-[1.01] shine-effect flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  className="w-full py-3.5 rounded-xl font-bold text-sm text-white transition-all hover:shadow-lg hover:scale-[1.01] flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
                   style={{ background: 'linear-gradient(135deg, #0891B2 0%, #0E7490 100%)' }}>
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><span>Submit Registration Request</span></>}
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span>Submit Registration Request</span>}
                 </button>
               </form>
 
               <p className="mt-5 text-center text-sm text-muted-foreground">
                 Already approved?{' '}
-                <Link to="/employer/login" className="text-secondary font-semibold hover:underline">Sign In</Link>
+                {/* ✅ Updated link to /company/login */}
+                <Link to="/company/login" className="text-secondary font-semibold hover:underline">Sign In</Link>
               </p>
               <p className="mt-2 text-center text-sm text-muted-foreground">
                 Looking for a job?{' '}

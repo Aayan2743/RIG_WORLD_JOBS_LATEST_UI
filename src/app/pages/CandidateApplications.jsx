@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Briefcase, MapPin, DollarSign, Clock, Search, X } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useState } from 'react';

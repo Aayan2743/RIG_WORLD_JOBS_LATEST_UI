@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Search, MapPin, DollarSign, Clock, SlidersHorizontal, ChevronDown, X, Building2, Star, TrendingUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ApplyNowPaymentModal } from '../components/ApplyNowPaymentModal.jsx';

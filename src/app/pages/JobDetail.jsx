@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router';
+import { useParams, Link } from 'react-router-dom';
 import { MapPin, Briefcase, DollarSign, Clock, Building2, Users, ChevronRight, Bookmark, Share2, CheckCircle, Globe, Star, Award } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useState } from 'react';

@@ -1,6 +1,7 @@
-import { Link } from 'react-router';
-import { Briefcase, Users, Eye, TrendingUp, MapPin, Clock, ChevronRight, Star } from 'lucide-react';
-import { motion } from 'motion/react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Briefcase, Users, Eye, TrendingUp, MapPin, Clock, ChevronRight, Star, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useJobs } from '../context/JobsContext.jsx';
 
 const recentApplicants = [
@@ -17,9 +18,75 @@ const applicantStatusConfig = {
   'Rejected': { bg: 'bg-red-50', text: 'text-red-600' },
 };
 
+const cardDetails = {
+  'Active Jobs': {
+    stats: [
+      { label: 'Total Active', value: '12' },
+      { label: 'New This Week', value: '2' },
+      { label: 'Expiring Soon', value: '3' },
+    ],
+    list: [
+      { title: 'Senior Drilling Engineer', sub: 'Drilling', badge: 'Active', badgeStyle: 'bg-emerald-50 text-emerald-700', meta: '18 applicants' },
+      { title: 'Offshore Safety Officer', sub: 'HSE', badge: 'Active', badgeStyle: 'bg-emerald-50 text-emerald-700', meta: '11 applicants' },
+      { title: 'Rig Supervisor', sub: 'Operations', badge: 'Expiring', badgeStyle: 'bg-amber-50 text-amber-700', meta: '24 applicants' },
+      { title: 'Mechanical Technician', sub: 'Maintenance', badge: 'Active', badgeStyle: 'bg-emerald-50 text-emerald-700', meta: '9 applicants' },
+      { title: 'Mud Engineer', sub: 'Drilling Fluids', badge: 'New', badgeStyle: 'bg-blue-50 text-primary', meta: '5 applicants' },
+    ],
+  },
+  'Total Applicants': {
+    stats: [
+      { label: 'Total Applicants', value: '156' },
+      { label: 'Shortlisted', value: '34' },
+      { label: 'Rejected', value: '28' },
+    ],
+    list: [
+      { title: 'Mohammed Al-Rashid', sub: 'Drilling Engineer', badge: 'Shortlisted', badgeStyle: 'bg-emerald-50 text-emerald-700', meta: '2 days ago' },
+      { title: 'Sarah Collins', sub: 'Safety Officer', badge: 'Reviewed', badgeStyle: 'bg-purple-50 text-purple-700', meta: '3 days ago' },
+      { title: 'Raj Kumar', sub: 'Rig Supervisor', badge: 'New', badgeStyle: 'bg-blue-50 text-primary', meta: '5 days ago' },
+      { title: 'Ivan Petrov', sub: 'Mechanical Tech', badge: 'Shortlisted', badgeStyle: 'bg-emerald-50 text-emerald-700', meta: '6 days ago' },
+      { title: 'Aisha Nwosu', sub: 'Mud Engineer', badge: 'Rejected', badgeStyle: 'bg-red-50 text-red-600', meta: '1 week ago' },
+    ],
+  },
+  'Job Views': {
+    stats: [
+      { label: 'Total Views', value: '2,345' },
+      { label: 'This Week', value: '+180' },
+      { label: 'Avg Per Job', value: '195' },
+    ],
+    list: [
+      { title: 'Rig Supervisor', sub: 'Operations', badge: 'Trending', badgeStyle: 'bg-emerald-50 text-emerald-700', meta: '542 views' },
+      { title: 'Senior Drilling Engineer', sub: 'Drilling', badge: 'High', badgeStyle: 'bg-blue-50 text-primary', meta: '487 views' },
+      { title: 'Offshore Safety Officer', sub: 'HSE', badge: 'High', badgeStyle: 'bg-blue-50 text-primary', meta: '401 views' },
+      { title: 'Mechanical Technician', sub: 'Maintenance', badge: 'Medium', badgeStyle: 'bg-amber-50 text-amber-700', meta: '234 views' },
+      { title: 'Mud Engineer', sub: 'Drilling Fluids', badge: 'Medium', badgeStyle: 'bg-amber-50 text-amber-700', meta: '195 views' },
+    ],
+  },
+  'New This Week': {
+    stats: [
+      { label: 'New This Week', value: '23' },
+      { label: 'Mon – Wed', value: '14' },
+      { label: 'Thu – Today', value: '9' },
+    ],
+    list: [
+      { title: 'Carlos Mendez', sub: 'Drilling Engineer', badge: 'New', badgeStyle: 'bg-blue-50 text-primary', meta: 'Today, 9:14 AM' },
+      { title: 'Priya Sharma', sub: 'HSE Analyst', badge: 'New', badgeStyle: 'bg-blue-50 text-primary', meta: 'Today, 8:02 AM' },
+      { title: 'Abdullah Hassan', sub: 'Rig Supervisor', badge: 'Reviewed', badgeStyle: 'bg-purple-50 text-purple-700', meta: 'Yesterday, 4:30 PM' },
+      { title: 'Natasha Ivanova', sub: 'Mechanical Tech', badge: 'New', badgeStyle: 'bg-blue-50 text-primary', meta: 'Yesterday, 11:00 AM' },
+      { title: 'James Okafor', sub: 'Mud Engineer', badge: 'Pending', badgeStyle: 'bg-amber-50 text-amber-700', meta: '2 days ago' },
+    ],
+  },
+};
+
 export function EmployerDashboard() {
   const { jobs } = useJobs();
   const activeJobs = jobs.filter(j => j.status === 'Active').slice(0, 5);
+  const [activeCard, setActiveCard] = useState(null);
+
+  const handleCardClick = (label) => {
+    setActiveCard(prev => (prev === label ? null : label));
+  };
+
+  const detail = activeCard ? cardDetails[activeCard] : null;
 
   return (
     <div className="space-y-6">
@@ -37,7 +104,12 @@ export function EmployerDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08 }}
-            className="bg-white rounded-2xl border border-border/60 p-4 shadow-sm hover:shadow-md transition-all"
+            onClick={() => handleCardClick(stat.label)}
+            className={`bg-white rounded-2xl border p-4 shadow-sm hover:shadow-md transition-all cursor-pointer select-none
+              ${activeCard === stat.label
+                ? 'border-primary ring-2 ring-primary/20'
+                : 'border-border/60 hover:border-border'
+              }`}
           >
             <div className="flex items-start justify-between mb-3">
               <div className={`w-9 h-9 rounded-xl ${stat.iconBg} flex items-center justify-center`}>
@@ -51,110 +123,65 @@ export function EmployerDashboard() {
         ))}
       </div>
 
-      {/* Active Jobs Table */}
-      {/* <div className="bg-white rounded-2xl border border-border/60 shadow-sm overflow-hidden">
-        <div className="flex items-center justify-between p-5 border-b border-border/60">
-          <h2 className="text-lg font-bold text-foreground">Active Job Listings</h2>
-          <Link to="/employer/jobs" className="text-secondary hover:underline text-sm font-semibold flex items-center space-x-1">
-            <span>Manage All</span><ChevronRight className="w-4 h-4" />
-          </Link>
-        </div>
-        <div className="divide-y divide-border/50">
-          {activeJobs.map((job, i) => (
-            <motion.div
-              key={job.id}
-              initial={{ opacity: 0, x: -16 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="p-5 hover:bg-muted/10 transition-colors"
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center space-x-2 mb-1.5">
-                    <Link to={`/employer/jobs/${job.id}`} className="text-base font-bold text-foreground hover:text-secondary transition-colors">{job.title}</Link>
-                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${job.status === 'Active' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
-                      {job.status}
+      {/* Detail Panel */}
+      <AnimatePresence>
+        {detail && (
+          <motion.div
+            key={activeCard}
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.2 }}
+            className="bg-white rounded-2xl border border-border/60 shadow-sm overflow-hidden"
+          >
+            {/* Panel Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-border/60">
+              <h2 className="text-base font-bold text-foreground">{activeCard}</h2>
+              <button
+                onClick={() => setActiveCard(null)}
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Summary Stats */}
+            <div className="grid grid-cols-3 gap-3 px-5 py-4 border-b border-border/60">
+              {detail.stats.map(s => (
+                <div key={s.label} className="bg-muted/30 rounded-xl px-4 py-3">
+                  <p className="text-xs text-muted-foreground mb-1">{s.label}</p>
+                  <p className="text-xl font-bold text-foreground">{s.value}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* List */}
+            <div className="divide-y divide-border/50">
+              {detail.list.map((item, i) => (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  className="flex items-center justify-between px-5 py-3.5 hover:bg-muted/10 transition-colors"
+                >
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{item.title}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{item.sub}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-muted-foreground">{item.meta}</span>
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${item.badgeStyle}`}>
+                      {item.badge}
                     </span>
                   </div>
-                  <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-                    <span className="flex items-center space-x-1"><MapPin className="w-3 h-3" /><span>{job.location}</span></span>
-                    <span>{job.type}</span>
-                    <span className="flex items-center space-x-1"><Clock className="w-3 h-3" /><span>Posted {job.posted}</span></span>
-                  </div>
-                  <div className="flex items-center space-x-3 mt-3">
-                    <div className="flex items-center space-x-1.5 text-xs text-muted-foreground">
-                      <Users className="w-3 h-3" />
-                      <span><strong className="text-foreground">{job.applicants}</strong> applicants</span>
-                    </div>
-                    <div className="flex-1 h-1.5 bg-muted/40 rounded-full overflow-hidden max-w-24">
-                      <div className="h-full rounded-full bg-secondary" style={{ width: `${Math.min((job.applicants / 60) * 100, 100)}%` }} />
-                    </div>
-                    <div className="flex items-center space-x-1.5 text-xs text-muted-foreground">
-                      <Eye className="w-3 h-3" />
-                      <span><strong className="text-foreground">{job.views}</strong> views</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex gap-2 flex-shrink-0">
-                  <Link
-                    to={`/employer/jobs/${job.id}/applicants`}
-                    className="px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all hover:shadow-md"
-                    style={{ background: 'linear-gradient(135deg, #0891B2, #0E7490)' }}
-                  >
-                    Applicants
-                  </Link>
-                  <Link
-                    to={`/employer/jobs/${job.id}/edit`}
-                    className="px-4 py-2 rounded-lg border border-border text-foreground text-sm font-medium hover:bg-muted/50 transition-colors"
-                  >
-                    Edit
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div> */}
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Recent Applicants */}
-      {/* <div className="bg-white rounded-2xl border border-border/60 shadow-sm">
-        <div className="flex items-center justify-between p-5 border-b border-border/60">
-          <h2 className="text-lg font-bold text-foreground">Recent Applicants</h2>
-          <Link to="/employer/applicants" className="text-secondary hover:underline text-sm font-semibold flex items-center space-x-1">
-            <span>View All</span><ChevronRight className="w-4 h-4" />
-          </Link>
-        </div>
-        <div className="divide-y divide-border/50">
-          {recentApplicants.map((applicant, i) => {
-            const sc = applicantStatusConfig[applicant.status] || applicantStatusConfig['New'];
-            return (
-              <motion.div
-                key={applicant.id}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08 }}
-                className="flex items-center p-5 hover:bg-muted/10 transition-colors gap-4"
-              >
-                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${applicant.color} flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}>
-                  {applicant.initials}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-foreground text-sm">{applicant.name}</h3>
-                  <p className="text-xs text-muted-foreground">Applied for <span className="text-foreground font-medium">{applicant.position}</span></p>
-                  <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-                    <span className="flex items-center space-x-1"><Star className="w-3 h-3 text-amber-400 fill-amber-400" /><span>{applicant.experience} exp.</span></span>
-                    <span>Applied {applicant.appliedDate}</span>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2 flex-shrink-0">
-                  <span className={`px-3 py-1.5 rounded-full text-xs font-semibold ${sc.bg} ${sc.text}`}>{applicant.status}</span>
-                  <Link to={`/employer/applicants/${applicant.id}`} className="text-secondary hover:underline font-semibold text-xs">View →</Link>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-      </div> */}
     </div>
   );
 }

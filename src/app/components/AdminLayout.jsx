@@ -1,5 +1,5 @@
-import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router';
-import { BarChart3, Briefcase, FileText, Bell, Building2, Settings, LogOut, Home } from 'lucide-react';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { BarChart3, Briefcase, FileText, Bell, Building2, Settings, LogOut, Home, DollarSign } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
 const SIDEBAR_WIDTH = 260;
@@ -10,6 +10,7 @@ const navItems = [
   { icon: FileText, label: 'Company Profile', to: '/admin/company-profile' },
   { icon: Bell, label: 'Notifications', to: '/admin/notifications' },
   { icon: Building2, label: 'Company Requests', to: '/admin/company-requests' },
+  { icon: DollarSign, label: 'Payments', to: '/admin/payments' },
   { icon: Settings, label: 'Settings', to: '/admin/settings' },
   { icon: FileText, label: 'Contact Us', to: '/admin/contact-us' },
 ];
@@ -27,6 +28,7 @@ export function AdminLayout() {
     if (p.includes('/admin/jobs')) return 'Job Listings';
     if (p.includes('/admin/company-profile')) return 'Company Profile';
     if (p.includes('/admin/company-requests')) return 'Company Requests';
+    if (p.includes('/admin/payments')) return 'Payments';
     if (p.includes('/admin/settings')) return 'Settings';
     if (p.includes('/admin/contact-us')) return 'Contact Us';
     return 'Admin';

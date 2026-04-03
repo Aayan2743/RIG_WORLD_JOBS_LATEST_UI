@@ -4,35 +4,22 @@ import { useAuth } from '../context/AuthContext.jsx';
 
 const SIDEBAR_WIDTH = 260;
 
+//  Company nav items — all pointing to /company/* routes
 const navItems = [
-  { icon: BarChart3, label: 'Dashboard', to: '/employer/dashboard' },
-  { icon: Briefcase, label: 'Job Listings', to: '/employer/jobs' },
-  // { icon: Users, label: 'Applicants', to: '/employer/applicants' },
-  { icon: FileText, label: 'Company Profile', to: '/employer/company-profile' },
-  // { icon: TrendingUp, label: 'Analytics', to: '/employer/analytics', platformOnly: true },
-  { icon: Bell, label: 'Notifications', to: '/employer/notifications' },
-  { icon: Building2, label: 'Company Requests', to: '/employer/company-requests', platformOnly: true },
-  { icon: Settings, label: 'Settings', to: '/employer/settings' },
-  { icon: FileText, label: 'Contact Us', to: '/employer/contact-us' },
+  { icon: BarChart3,  label: 'Dashboard',       to: '/company/dashboard' },
+  { icon: Briefcase,  label: 'Job Listings',     to: '/company/jobs' },
+  { icon: FileText,   label: 'Company Profile',  to: '/company/company-profile' },
+  { icon: Bell,       label: 'Notifications',    to: '/company/notifications' },
+  { icon: Settings,   label: 'Settings',         to: '/company/settings' },
+  { icon: FileText,   label: 'Contact Us',       to: '/company/contact-us' },
 ];
 
-export function EmployerLayout() {
+export function CompanyLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  //  FIXED: use role + companyName to correctly distinguish admin/employer/company
-  const isAdmin   = user?.role === 'admin';
-  const isCompany = !isAdmin && !!user?.companyName;
-  const displayName = user?.companyName || user?.name || 'Employer';
-
-  const getRoleLabel = () => {
-    if (isAdmin) return 'Admin';
-    if (isCompany) return 'Company';
-    return 'Employer';
-  };
-
-  const visibleNav = navItems.filter(item => !item.platformOnly || !isCompany);
+  const displayName = user?.companyName || user?.name || 'Company';
 
   const initials = displayName
     .split(' ')
@@ -43,15 +30,14 @@ export function EmployerLayout() {
 
   const pageTitle = (() => {
     const p = location.pathname;
-    if (p.includes('/employer/dashboard')) return 'Dashboard';
-    if (p.includes('/employer/jobs')) return 'Job Listings';
-    if (p.includes('/employer/applicants')) return 'Applicants';
-    if (p.includes('/employer/company-profile')) return 'Company Profile';
-    // if (p.includes('/employer/analytics')) return 'Analytics';
-    if (p.includes('/employer/company-requests')) return 'Company Requests';
-    if (p.includes('/employer/settings')) return 'Settings';
-    if (p.includes('/employer/contact-us')) return 'Contact Us';
-    return 'Employer';
+    if (p.includes('/company/dashboard'))      return 'Dashboard';
+    if (p.includes('/company/jobs'))           return 'Job Listings';
+    if (p.includes('/company/company-profile'))return 'Company Profile';
+    if (p.includes('/company/notifications'))  return 'Notifications';
+    if (p.includes('/company/settings'))       return 'Settings';
+    if (p.includes('/company/contact-us'))     return 'Contact Us';
+    if (p.includes('/company/post-job'))       return 'Post Job';
+    return 'Dashboard';
   })();
 
   return (
@@ -76,7 +62,7 @@ export function EmployerLayout() {
 
           <div className="p-4 flex-1 overflow-auto">
             <nav className="space-y-1">
-              {visibleNav.map(item => (
+              {navItems.map(item => (
                 <NavLink
                   key={item.to}
                   to={item.to}
@@ -118,8 +104,8 @@ export function EmployerLayout() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between gap-4">
               <div className="min-w-0">
-                {/*  FIXED: shows correct role label */}
-                <p className="text-xs text-muted-foreground">{getRoleLabel()}</p>
+                {/* Always shows "Company" label */}
+                <p className="text-xs text-muted-foreground">Company</p>
                 <h1 className="text-xl font-bold text-foreground truncate">{pageTitle}</h1>
               </div>
               <div className="flex items-center gap-3">
@@ -129,8 +115,8 @@ export function EmployerLayout() {
                   </div>
                   <div className="hidden sm:block">
                     <div className="text-sm font-bold text-foreground leading-tight">{displayName}</div>
-                    {/*  FIXED: shows correct role label */}
-                    <div className="text-xs text-muted-foreground leading-tight">{getRoleLabel()}</div>
+                    {/*  Always shows "Company" label */}
+                    <div className="text-xs text-muted-foreground leading-tight">Company</div>
                   </div>
                 </div>
               </div>

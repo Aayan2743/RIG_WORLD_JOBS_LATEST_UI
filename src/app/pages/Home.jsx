@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Search, MapPin, Briefcase, Users, TrendingUp, CheckCircle, Building2, DollarSign, Clock, ChevronRight, Star, Zap, Shield, Globe } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
@@ -176,7 +176,7 @@ export function Home() {
                     <Search className="w-2 h-5 text-gray-400 mr-3 flex-shrink-0" />
                     <input
                       type="text"
-                      placeholder="Job title or keywords"
+                      placeholder="Job title,Keywords,Location,Job Category,Job Type(Full time/contract/offshore)"
                       value={searchQuery}
                       onChange={e => setSearchQuery(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter') window.location.href = `/jobs?q=${searchQuery}`; }}
@@ -209,21 +209,22 @@ export function Home() {
 
               {/* CTA Buttons below search */}
               <div className="flex flex-col sm:flex-row gap-3 justify-center mt-5">
-                {/* <Link
-                  to="/jobs"
+                <Link
+                  to={`/jobs?q=${encodeURIComponent(searchQuery.trim())}`}
                   className="flex items-center justify-center space-x-2 px-7 py-3.5 rounded-xl text-white font-bold text-sm transition-all hover:shadow-xl hover:scale-[1.02] shine-effect"
                   style={{ background: 'var(--gradient-primary)' }}
                 >
                   <Search className="w-4 h-4" />
                   <span>Search Jobs</span>
-                </Link> */}
-                {/* <Link
+                </Link>
+
+                <Link
                   to="/candidate/profile"
                   className="flex items-center justify-center space-x-2 px-7 py-3.5 rounded-xl font-bold text-sm border-2 border-white/40 text-white hover:bg-white/10 hover:border-white/70 transition-all"
                 >
                   <Users className="w-4 h-4" />
                   <span>Upload CV</span>
-                </Link> */}
+                </Link>
               </div>
             </motion.div>
 

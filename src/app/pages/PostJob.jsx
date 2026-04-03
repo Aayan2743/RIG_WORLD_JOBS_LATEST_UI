@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Briefcase, MapPin, DollarSign, CheckCircle, ArrowRight, Plus, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useJobs } from '../context/JobsContext.jsx';

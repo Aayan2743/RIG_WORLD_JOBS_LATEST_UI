@@ -1,4 +1,4 @@
-import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Briefcase, FileText, Bookmark, Settings, User, LogOut, Home } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 

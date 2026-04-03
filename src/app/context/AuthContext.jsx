@@ -54,14 +54,14 @@ export function AuthProvider({ children }) {
 
   const [token, setToken] = useState(() => localStorage.getItem('token'));
 
-  // ✅ attach token on reload
+  //  attach token on reload
   useEffect(() => {
     if (token) {
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
   }, [token]);
 
-  // ✅ LOGIN
+  //  LOGIN
   const login = (newToken, newUser) => {
     localStorage.setItem('token', newToken);
     localStorage.setItem('user', JSON.stringify(newUser));
@@ -73,7 +73,7 @@ export function AuthProvider({ children }) {
     setUser(newUser);
   };
 
-  // ✅ LOGOUT
+  //  LOGOUT
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -82,9 +82,6 @@ export function AuthProvider({ children }) {
 
     setToken(null);
     setUser(null);
-
-    // redirect
-    window.location.href = "/login";
   };
 
   return (

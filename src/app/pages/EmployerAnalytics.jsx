@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { BarChart3, TrendingUp, Users, Eye, Briefcase, ChevronRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useJobs } from '../context/JobsContext.jsx';
