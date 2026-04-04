@@ -137,19 +137,22 @@ export const router = createBrowserRouter([
         <AdminLayout />
       </ProtectedRoute>
     ),
-    children: [
-      { index: true, element: <AdminDashboard /> },
-      { path: "dashboard", element: <AdminDashboard /> },
-      { path: "jobs", element: <EmployerJobListings /> },
-      { path: "company-profile", element: <AdminCompanyProfiles /> },
-      { path: "analytics", element: <EmployerAnalytics /> },
-      { path: "notifications", element: <EmployerNotifications /> },
-      { path: "settings", element: <EmployerSettings /> },
-      { path: "company-requests", element: <CompanyRequests /> },
-      { path: "payments", element: <AdminPayments /> },
-      { path: "contact-us", element: <ContactUs /> },
-      { path: "post-job", element: <PostJob /> },
-    ],
+    // ── Admin routes ──
+children: [
+  { index: true, element: <AdminDashboard /> },
+  { path: "dashboard", element: <AdminDashboard /> },
+  { path: "jobs", element: <EmployerJobListings /> },
+  { path: "jobs/:jobId/applicants", element: <CompanyApplicants /> }, 
+  { path: "company-profile", element: <AdminCompanyProfiles /> },
+  { path: "analytics", element: <EmployerAnalytics /> },
+  { path: "notifications", element: <EmployerNotifications /> },
+  { path: "settings", element: <EmployerSettings /> },
+  { path: "company-requests", element: <CompanyRequests /> },
+  { path: "payments", element: <AdminPayments /> },
+  { path: "contact-us", element: <ContactUs /> },
+  { path: "post-job", element: <PostJob /> },
+  { path: "jobs/:jobId/applicants", element: <CompanyApplicants /> } 
+],
   },
 
   { path: "*", Component: NotFound },

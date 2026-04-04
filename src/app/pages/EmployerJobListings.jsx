@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Briefcase, Eye, Clock, MapPin, Users, TrendingUp, Edit, Pause, Play, Trash2, Search, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useState } from 'react';
@@ -38,11 +38,14 @@ const CARD_CONFIG = {
 };
 
 export function EmployerJobListings() {
-  // myJobs is pre-filtered to the logged-in company by JobsContext
   const { myJobs, toggleStatus, deleteJob } = useJobs();
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
   const [activeCard, setActiveCard] = useState(null);
+
+  // ✅ FIX: Detect if we're in admin or company context
+  const { pathname } = useLocation();
+  const basePath = pathname.startsWith('/admin') ? '/admin' : '/company';
 
   const filtered = myJobs.filter(j => {
     if (filterStatus !== 'All' && j.status !== filterStatus) return false;
@@ -185,8 +188,9 @@ export function EmployerJobListings() {
                       </div>
                     </div>
                     <div className="flex gap-2 flex-shrink-0">
+                      {/* ✅ FIX: Use basePath so admin goes to /admin/jobs/... and company to /company/jobs/... */}
                       <Link
-                        to={`/company/jobs/${job.id}/applicants`}
+                        to={`${basePath}/jobs/${job.id}/applicants`}
                         className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-all hover:shadow-md"
                         style={{ background: 'linear-gradient(135deg, #0891B2, #0E7490)' }}
                       >
@@ -263,9 +267,12 @@ export function EmployerJobListings() {
                   </div>
                 </div>
                 <div className="flex gap-2 flex-wrap sm:flex-nowrap flex-shrink-0">
-                  <Link to={`/company/jobs/${job.id}/applicants`}
+                  {/* ✅ FIX: Use basePath so admin goes to /admin/jobs/... and company to /company/jobs/... */}
+                  <Link
+                    to={`${basePath}/jobs/${job.id}/applicants`}
                     className="px-3.5 py-2 rounded-lg text-sm font-semibold text-white shine-effect hover:shadow-md transition-all"
-                    style={{ background: 'linear-gradient(135deg, #0891B2, #0E7490)' }}>
+                    style={{ background: 'linear-gradient(135deg, #0891B2, #0E7490)' }}
+                  >
                     Applicants
                   </Link>
                   <button className="p-2 rounded-lg border border-border text-muted-foreground hover:bg-muted/50 transition-colors" title="Edit">

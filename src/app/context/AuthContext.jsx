@@ -40,7 +40,7 @@
 
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import api from '../../utils/api'; // 👈 important
+import api from '../../utils/api'; // important
 
 const AuthContext = createContext(null);
 
@@ -99,7 +99,7 @@ export function AuthProvider({ children }) {
   );
 }
 
-// ✅ HOOK
+//  HOOK
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth must be used inside AuthProvider');

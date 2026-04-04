@@ -1,10 +1,10 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import {
-  ArrowLeft, Search, Filter, Download, Mail, Phone,
+  ArrowLeft, Search, Download, Mail, Phone,
   MapPin, Calendar, Star, CheckCircle, XCircle, Clock,
-  Eye, FileText, ChevronDown, User
+  Eye, FileText, User
 } from 'lucide-react';
 
 const mockApplicants = [
@@ -47,6 +47,10 @@ export function CompanyApplicants() {
   const [applicants, setApplicants] = useState(mockApplicants);
   const [selected, setSelected] = useState(null);
 
+  // ✅ FIX: Detect context so the back arrow returns to the correct jobs page
+  const { pathname } = useLocation();
+  const basePath = pathname.startsWith('/admin') ? '/admin' : '/company';
+
   const jobTitle = jobTitles[jobId] || 'Job Position';
 
   const filtered = applicants.filter(a => {
@@ -73,8 +77,11 @@ export function CompanyApplicants() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <Link to="/company/jobs"
-            className="p-2 rounded-xl border border-border text-muted-foreground hover:bg-muted/50 transition-colors">
+          {/* ✅ FIX: Back arrow returns to correct jobs page based on context */}
+          <Link
+            to={`${basePath}/jobs`}
+            className="p-2 rounded-xl border border-border text-muted-foreground hover:bg-muted/50 transition-colors"
+          >
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
@@ -136,7 +143,6 @@ export function CompanyApplicants() {
                 <p className="font-semibold text-foreground">No applicants found</p>
               </div>
             ) : filtered.map((applicant, i) => {
-              const StatusIcon = statusConfig[applicant.status]?.icon || Clock;
               return (
                 <motion.div key={applicant.id}
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.05 }}
