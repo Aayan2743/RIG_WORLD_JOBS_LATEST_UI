@@ -16,7 +16,8 @@ import { CandidateSettings } from "./pages/CandidateSettings.jsx";
 import { SavedJobs } from "./pages/SavedJobs.jsx";
 import { EmployerDashboard } from "./pages/EmployerDashboard.jsx";
 import { PostJob } from "./pages/PostJob.jsx";
-import { EmployerJobListings } from "./pages/EmployerJobListings.jsx";
+import { JobListings } from "./pages/JobListings.jsx";           // ✅ company job listings
+import { EmployerJobListings } from "./pages/EmployerJobListings.jsx"; // admin only
 import { EmployerCompanyProfile } from "./pages/EmployerCompanyProfile.jsx";
 import { AdminCompanyProfiles } from "./pages/AdminCompanyProfiles.jsx";
 import { EmployerAnalytics } from "./pages/EmployerAnalytics.jsx";
@@ -39,46 +40,48 @@ import { ProtectedRoute } from "./components/ProtectedRoute.jsx";
 import { CandidateLayout } from "./components/CandidateLayout.jsx";
 import { CompanyLayout } from "./components/CompanyLayout.jsx";
 import { CompanyLogin } from "./pages/CompanyLogin.jsx";
-import { CompanyRegister } from "./pages/CompanyRegister.jsx";
+import { CompanyRegister } from "./pages/Companyregister.jsx";
 import { CompanyApplicants } from "./pages/CompanyApplicants.jsx";
 import { Navigate } from "react-router-dom";
 import { AdminLayout } from "./components/AdminLayout.jsx";
+import AdminSettings from "./pages/AdminSettings.jsx";
 
 export const router = createBrowserRouter([
-  // ── Public routes ──
+
+  // ── Public routes ──────────────────────────────────────────────────────────
   {
     path: "/",
     Component: Layout,
     children: [
       { index: true, Component: Home },
-      { path: "jobs", Component: Jobs },
-      { path: "jobs/:id", Component: JobDetail },
-      { path: "about", Component: About },
-      { path: "companies", Component: Companies },
-      { path: "companies/:slug", Component: CompanyDetail },
-      { path: "forgot-password", Component: ForgotPassword },
-      { path: "candidate/login", Component: CandidateLogin },
-      { path: "candidate/register", Component: CandidateRegister },
-      { path: "contact-us", Component: ContactUs },
-      { path: "terms-of-use", Component: TermsOfUse },
-      { path: "shipping-policy", Component: ShippingPolicy },
-      { path: "refund-policy", Component: RefundPolicy },
-      { path: "privacy-policy", Component: PrivacyPolicy },
-      { path: "applicant-terms", Component: ApplicantTerms },
-      { path: "faqs", Component: Faqs },
-      { path: "payment", Component: Payment },
+      { path: "jobs",                Component: Jobs },
+      { path: "jobs/:id",            Component: JobDetail },
+      { path: "about",               Component: About },
+      { path: "companies",           Component: Companies },
+      { path: "companies/:slug",     Component: CompanyDetail },
+      { path: "forgot-password",     Component: ForgotPassword },
+      { path: "candidate/login",     Component: CandidateLogin },
+      { path: "candidate/register",  Component: CandidateRegister },
+      { path: "contact-us",          Component: ContactUs },
+      { path: "terms-of-use",        Component: TermsOfUse },
+      { path: "shipping-policy",     Component: ShippingPolicy },
+      { path: "refund-policy",       Component: RefundPolicy },
+      { path: "privacy-policy",      Component: PrivacyPolicy },
+      { path: "applicant-terms",     Component: ApplicantTerms },
+      { path: "faqs",                Component: Faqs },
+      { path: "payment",             Component: Payment },
 
-      // Company public routes
-      { path: "company/login", Component: CompanyLogin },
+      // Company auth
+      { path: "company/login",    Component: CompanyLogin },
       { path: "company/register", Component: CompanyRegister },
 
-      // Keep old employer routes as redirects so old links don't break
-      { path: "employer/login", element: <Navigate to="/company/login" replace /> },
+      // Legacy employer redirects
+      { path: "employer/login",    element: <Navigate to="/company/login"    replace /> },
       { path: "employer/register", element: <Navigate to="/company/register" replace /> },
     ],
   },
 
-  // ── Candidate routes ──
+  // ── Candidate routes ───────────────────────────────────────────────────────
   {
     path: "/candidate",
     element: (
@@ -88,16 +91,16 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Navigate to="/candidate/dashboard" replace /> },
-      { path: "dashboard", Component: CandidateDashboard },
+      { path: "dashboard",    Component: CandidateDashboard },
       { path: "applications", Component: CandidateApplications },
-      { path: "profile", Component: CandidateProfile },
-      { path: "saved-jobs", Component: SavedJobs },
-      { path: "settings", Component: CandidateSettings },
-      { path: "contact-us", Component: ContactUs },
+      { path: "profile",      Component: CandidateProfile },
+      { path: "saved-jobs",   Component: SavedJobs },
+      { path: "settings",     Component: CandidateSettings },
+      { path: "contact-us",   Component: ContactUs },
     ],
   },
 
-  // ── Company routes ──
+  // ── Company (Employer) routes ──────────────────────────────────────────────
   {
     path: "/company",
     element: (
@@ -107,18 +110,18 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Navigate to="/company/dashboard" replace /> },
-      { path: "dashboard", Component: EmployerDashboard },
-      { path: "jobs", Component: EmployerJobListings },
-      { path: "jobs/:jobId/applicants", Component: CompanyApplicants }, // ✅ NEW
-      { path: "company-profile", Component: EmployerCompanyProfile },
-      { path: "notifications", Component: EmployerNotifications },
-      { path: "settings", Component: EmployerSettings },
-      { path: "contact-us", Component: ContactUs },
-      { path: "post-job", Component: PostJob },
+      { path: "dashboard",              Component: EmployerDashboard },
+      { path: "jobs",                   Component: JobListings },         // ✅ new JobListings page
+      { path: "jobs/:jobId/applicants", Component: CompanyApplicants },
+      { path: "post-job",               Component: PostJob },             // ✅ post a job
+      { path: "company-profile",        Component: EmployerCompanyProfile },
+      { path: "notifications",          Component: EmployerNotifications },
+      { path: "settings",               Component: EmployerSettings },
+      { path: "contact-us",             Component: ContactUs },
     ],
   },
 
-  // Keep /employer/* redirecting to /company/* so old bookmarks still work
+  // Legacy employer redirects
   {
     path: "/employer",
     element: <Navigate to="/company/dashboard" replace />,
@@ -128,7 +131,7 @@ export const router = createBrowserRouter([
     element: <Navigate to="/company/dashboard" replace />,
   },
 
-  // ── Admin routes ──
+  // ── Admin routes ───────────────────────────────────────────────────────────
   { path: "/admin/login", Component: AdminLogin },
   {
     path: "/admin",
@@ -137,22 +140,20 @@ export const router = createBrowserRouter([
         <AdminLayout />
       </ProtectedRoute>
     ),
-    // ── Admin routes ──
-children: [
-  { index: true, element: <AdminDashboard /> },
-  { path: "dashboard", element: <AdminDashboard /> },
-  { path: "jobs", element: <EmployerJobListings /> },
-  { path: "jobs/:jobId/applicants", element: <CompanyApplicants /> }, 
-  { path: "company-profile", element: <AdminCompanyProfiles /> },
-  { path: "analytics", element: <EmployerAnalytics /> },
-  { path: "notifications", element: <EmployerNotifications /> },
-  { path: "settings", element: <EmployerSettings /> },
-  { path: "company-requests", element: <CompanyRequests /> },
-  { path: "payments", element: <AdminPayments /> },
-  { path: "contact-us", element: <ContactUs /> },
-  { path: "post-job", element: <PostJob /> },
-  { path: "jobs/:jobId/applicants", element: <CompanyApplicants /> } 
-],
+    children: [
+      { index: true,                    element: <AdminDashboard /> },
+      { path: "dashboard",              element: <AdminDashboard /> },
+      { path: "jobs",                   element: <EmployerJobListings /> }, // admin uses its own view
+      { path: "jobs/:jobId/applicants", element: <CompanyApplicants /> },
+      { path: "post-job",               element: <PostJob /> },
+      { path: "company-profile",        element: <AdminCompanyProfiles /> },
+      { path: "analytics",              element: <EmployerAnalytics /> },
+      { path: "notifications",          element: <EmployerNotifications /> },
+      { path: "settings",               element: <AdminSettings /> },
+      { path: "company-requests",       element: <CompanyRequests /> },
+      { path: "payments",               element: <AdminPayments /> },
+      { path: "contact-us",             element: <ContactUs /> },
+    ],
   },
 
   { path: "*", Component: NotFound },

@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { User, Lock, Eye, EyeOff, Save, CheckCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
-
 const USERS_KEY = 'rwj_users';
+
 function getUsers() {
   try { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); } catch { return []; }
 }
@@ -11,7 +11,7 @@ function saveUsers(users) {
   localStorage.setItem(USERS_KEY, JSON.stringify(users));
 }
 
-export default  function EmployerSettings() {
+export default function EmployerSettings() {
   const { user } = useAuth();
   const [tab, setTab] = useState('account');
   const [saved, setSaved] = useState(false);
@@ -77,12 +77,13 @@ export default  function EmployerSettings() {
         </div>
       )}
 
-      {/* Tabs */}
       <div className="flex gap-2">
         {tabs.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
-              tab === t.id ? 'bg-secondary text-white shadow-sm' : 'bg-white border border-border text-muted-foreground hover:bg-muted/40'
+              tab === t.id
+                ? 'bg-secondary text-white shadow-sm'
+                : 'bg-white border border-border text-muted-foreground hover:bg-muted/40'
             }`}>
             <t.icon className="w-4 h-4" />
             {t.label}
@@ -90,7 +91,6 @@ export default  function EmployerSettings() {
         ))}
       </div>
 
-      {/* Account Tab */}
       {tab === 'account' && (
         <form onSubmit={saveAccount} className="bg-white rounded-2xl border border-border/60 p-6 space-y-4">
           <h3 className="font-bold text-foreground">Account Information</h3>
@@ -113,7 +113,6 @@ export default  function EmployerSettings() {
         </form>
       )}
 
-      {/* Security Tab */}
       {tab === 'security' && (
         <form onSubmit={savePassword} className="bg-white rounded-2xl border border-border/60 p-6 space-y-4">
           <h3 className="font-bold text-foreground">Change Password</h3>
