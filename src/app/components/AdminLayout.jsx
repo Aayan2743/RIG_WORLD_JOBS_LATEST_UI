@@ -1,18 +1,19 @@
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { BarChart3, Briefcase, FileText, Bell, Building2, Settings, LogOut, Home, DollarSign } from 'lucide-react';
+import { BarChart3, Briefcase, FileText, Bell, Building2, Settings, LogOut, Home, DollarSign, Factory } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
 const SIDEBAR_WIDTH = 260;
 
 const navItems = [
-  { icon: BarChart3, label: 'Dashboard', to: '/admin' },
-  { icon: Briefcase, label: 'Job Listings', to: '/admin/jobs' },
-  { icon: FileText, label: 'Company Profile', to: '/admin/company-profile' },
-  { icon: Bell, label: 'Notifications', to: '/admin/notifications' },
-  { icon: Building2, label: 'Company Requests', to: '/admin/company-requests' },
-  { icon: DollarSign, label: 'Payments', to: '/admin/payments' },
-  { icon: Settings, label: 'Settings', to: '/admin/settings' },
-  { icon: FileText, label: 'Contact Us', to: '/admin/contact-us' },
+  { icon: BarChart3,   label: 'Dashboard',        to: '/admin' },
+  { icon: Briefcase,   label: 'Job Listings',      to: '/admin/jobs' },
+  { icon: FileText,    label: 'Company Profile',   to: '/admin/company-profile' },
+  { icon: Bell,        label: 'Notifications',     to: '/admin/notifications' },
+  { icon: Building2,   label: 'Company Requests',  to: '/admin/company-requests' },
+  { icon: DollarSign,  label: 'Payments',          to: '/admin/payments' },
+  { icon: Factory,     label: 'Industries',        to: '/admin/industries' },  // ← NEW
+  { icon: Settings,    label: 'Settings',          to: '/admin/settings' },
+  { icon: FileText,    label: 'Contact Us',        to: '/admin/contact-us' },
 ];
 
 export function AdminLayout() {
@@ -29,6 +30,7 @@ export function AdminLayout() {
     if (p.includes('/admin/company-profile')) return 'Company Profile';
     if (p.includes('/admin/company-requests')) return 'Company Requests';
     if (p.includes('/admin/payments')) return 'Payments';
+    if (p.includes('/admin/industries')) return 'Industries & Job Categories';  // ← NEW
     if (p.includes('/admin/settings')) return 'Settings';
     if (p.includes('/admin/contact-us')) return 'Contact Us';
     return 'Admin';
@@ -48,6 +50,7 @@ export function AdminLayout() {
         <div className="p-4 space-y-2">
           {navItems.map(item => (
             <NavLink key={item.to} to={item.to}
+              end={item.to === '/admin'}
               className={({ isActive }) =>
                 `block px-3 py-2 rounded ${isActive ? 'bg-blue-100 text-blue-600' : ''}`
               }>

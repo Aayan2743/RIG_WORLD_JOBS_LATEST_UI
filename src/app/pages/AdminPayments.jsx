@@ -60,10 +60,10 @@ export function AdminPayments() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-1">
+      {/* <div className="space-y-1">
         <h2 className="text-xl sm:text-2xl font-bold text-foreground">Payments</h2>
         <p className="text-sm text-muted-foreground">Admin-only payment records (application fee).</p>
-      </div>
+      </div> */}
 
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
         <div className="flex-1">

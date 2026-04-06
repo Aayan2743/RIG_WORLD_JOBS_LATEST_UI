@@ -267,13 +267,14 @@ export function JobDetail() {
           </div>
 
           {/* ── Sidebar ── */}
-          <div className="space-y-5">
+          <div className="space-y-5 sticky top-24 self-start">
+
 
             {/* Apply Card — Sticky */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white rounded-2xl border border-border/60 p-6 sticky top-24 shadow-sm"
+              className="bg-white rounded-2xl border border-border/60 p-6 shadow-sm"
             >
               {applied ? (
                 <button
